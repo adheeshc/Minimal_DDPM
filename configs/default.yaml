@@ -1,0 +1,60 @@
+# Default Configuration for DDPM Training (same as paper)
+
+model:
+  image_size: 32
+  in_channels: 3
+  out_channels: 3
+  base_channels: 64
+  channel_multipliers: [1, 2, 4]
+  num_res_blocks: 2
+  time_embed_dim: 128
+  dropout: 0.0
+  use_attention: true
+  attention_resolutions: [16]
+
+diffusion:
+  timesteps: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+  schedule_type: "linear"  # "linear" or "cosine"
+
+training:
+  batch_size: 64
+  num_epochs: 100
+  learning_rate: 0.0002
+  weight_decay: 0.0
+  grad_clip: 1.0
+  ema_decay: 0.9999
+  use_ema: true
+
+data:
+  dataset: "cifar10"
+  data_root: "./data"
+  num_workers: 4
+  pin_memory: true
+  
+optimizer:
+  type: "adam"
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+scheduler:
+  type: "linear"  # "constant", "cosine", "linear"
+  warmup_steps: 0
+
+logging:
+  output_dir: "./outputs"
+  exp_name: "ddpm_cifar10"
+  save_every: 10
+  sample_every: 5
+  log_every: 100
+  num_samples: 64
+
+device:
+  accelerator: "cuda"  # "cuda", "cpu"
+  mixed_precision: false
+
+sampling:
+  num_inference_steps: 1000
+  eta: 0.0  # 0.0 for DDPM, >0 for stochastic
+  variance_type: "posterior"  # "posterior" or "beta"

@@ -1,0 +1,58 @@
+model:
+  image_size: 32
+  in_channels: 3
+  out_channels: 3
+  base_channels: 48
+  channel_multipliers: [1, 2, 4]
+  num_res_blocks: 2
+  time_embed_dim: 128
+  dropout: 0.0
+  use_attention: true
+  attention_resolutions: [16]
+
+diffusion:
+  timesteps: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+  schedule_type: "linear"
+
+training:
+  batch_size: 48
+  num_epochs: 100
+  learning_rate: 0.0002
+  weight_decay: 0.0
+  grad_clip: 1.0
+  ema_decay: 0.9999
+  use_ema: false
+
+data:
+  dataset: "cifar10"
+  data_root: "../../../Datasets"
+  num_workers: 2
+  pin_memory: true
+  
+optimizer:
+  type: "adam"
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+scheduler:
+  type: "constant"
+  warmup_steps: 0
+
+logging:
+  output_dir: "./outputs"
+  exp_name: "ddpm_cifar10"
+  save_every: 10
+  sample_every: 5
+  log_every: 100
+  num_samples: 36
+
+device:
+  accelerator: "cuda"
+  mixed_precision: false
+
+sampling:
+  num_inference_steps: 1000
+  eta: 0.0
+  variance_type: "posterior"
