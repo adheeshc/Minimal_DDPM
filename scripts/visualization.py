@@ -4,12 +4,12 @@ Plot training curves, generate sample grids
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from torchvision.utils import make_grid, save_image
+from torchvision.utils import save_image
 
 
 def save_sample_grid(
