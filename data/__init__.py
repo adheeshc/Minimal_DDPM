@@ -1,1 +1,1 @@
-from dataloader import CIFARDataLoader
+from .dataloader import CIFARDataLoader

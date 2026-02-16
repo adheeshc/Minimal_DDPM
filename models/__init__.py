@@ -1,2 +1,2 @@
-from time_embedding import SinusoidalTimeEmbedding, TimeEmbeddingMLP, TimestepEmbedding
-from unet import SimpleUNet
+from .time_embedding import SinusoidalTimeEmbedding, TimeEmbeddingMLP, TimestepEmbedding
+from .unet import SimpleUNet

@@ -16,7 +16,6 @@ def save_checkpoint(
     step: int,
     loss: float,
     save_path: str,
-    ema_model: Optional[nn.Module] = None,
     config: Optional[Any] = None,
     **kwargs,
 ):
@@ -30,7 +29,6 @@ def save_checkpoint(
         step: Current step
         loss: Current loss
         save_path: Path to save checkpoint
-        ema_model: Optional EMA model
         config: Optional config object
         **kwargs: Additional items to save
     """
@@ -45,9 +43,6 @@ def save_checkpoint(
         "optimizer_state_dict": optimizer.state_dict(),
     }
 
-    if ema_model is not None:
-        checkpoint["ema_model_state_dict"] = ema_model.state_dict()
-
     if config is not None:
         checkpoint["config"] = config
 
@@ -60,7 +55,6 @@ def load_checkpoint(
     checkpoint_path: str,
     model: nn.Module,
     optimizer: Optional[torch.optim.Optimizer] = None,
-    ema_model: Optional[nn.Module] = None,
     device: str = "cuda",
 ) -> Dict[str, Any]:
     """
@@ -70,7 +64,6 @@ def load_checkpoint(
         checkpoint_path: Path to checkpoint
         model: Model to load state into
         optimizer: Optional optimizer to load state into
-        ema_model: Optional EMA model to load state into
         device: Device to load tensors to
 
     Returns:
@@ -87,9 +80,6 @@ def load_checkpoint(
     if optimizer is not None and "optimizer_state_dict" in checkpoint:
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
-    if ema_model is not None and "ema_model_state_dict" in checkpoint:
-        ema_model.load_state_dict(checkpoint["ema_model_state_dict"])
-
     metadata = {
         "epoch": checkpoint.get("epoch", 0),
         "step": checkpoint.get("step", 0),
@@ -101,7 +91,6 @@ def load_checkpoint(
         if key not in [
             "model_state_dict",
             "optimizer_state_dict",
-            "ema_model_state_dict",
             "epoch",
             "step",
             "loss",

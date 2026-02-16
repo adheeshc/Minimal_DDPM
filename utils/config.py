@@ -32,6 +32,7 @@ class DiffusionConfig:
     timesteps: int = 1000
     beta_start: float = 0.0001
     beta_end: float = 0.02
+    offset: float = 0.008
     schedule_type: str = "linear"
 
 

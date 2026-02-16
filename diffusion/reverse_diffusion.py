@@ -2,9 +2,11 @@
 Reverse Diffusion Process (Sampling)
 """
 
+from typing import Literal, overload
+
 import torch
 import torch.nn as nn
-from forward_diffusion import ForwardDiffusion
+from .forward_diffusion import ForwardDiffusion
 from tqdm import tqdm
 
 
@@ -91,6 +93,24 @@ class DDPMSampler:
 
         return x_t_minus_1, pred_x0
 
+    @overload
+    def sample(
+        self,
+        shape: tuple,
+        device: str = "cuda",
+        return_intermediates: Literal[False] = False,
+        progress_bar: bool = True,
+    ) -> torch.Tensor: ...
+
+    @overload
+    def sample(
+        self,
+        shape: tuple,
+        device: str = "cuda",
+        return_intermediates: Literal[True] = ...,
+        progress_bar: bool = True,
+    ) -> tuple[torch.Tensor, list[dict]]: ...
+
     @torch.no_grad()
     def sample(
         self,
@@ -98,7 +118,7 @@ class DDPMSampler:
         device: str = "cuda",
         return_intermediates: bool = False,
         progress_bar: bool = True,
-    ) -> torch.Tensor | tuple[torch.Tensor, list[dict] | None]:
+    ) -> torch.Tensor | tuple[torch.Tensor, list[dict]]:
         """
         Full sampling procedure (Algorithm 2)
 
@@ -142,6 +162,7 @@ class DDPMSampler:
                 )
 
         if return_intermediates:
+            assert intermediates is not None
             return x_t, intermediates
         return x_t
 
