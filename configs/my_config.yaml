@@ -2,7 +2,7 @@ model:
   image_size: 32
   in_channels: 3
   out_channels: 3
-  base_channels: 48
+  base_channels: 64
   channel_multipliers: [1, 2, 4]
   num_res_blocks: 2
   time_embed_dim: 128
@@ -14,11 +14,12 @@ diffusion:
   timesteps: 1000
   beta_start: 0.0001
   beta_end: 0.02
+  offset: 0.008
   schedule_type: "linear"
 
 training:
-  batch_size: 48
-  num_epochs: 100
+  batch_size: 128
+  num_epochs: 10
   learning_rate: 0.0002
   weight_decay: 0.0
   grad_clip: 1.0
@@ -28,7 +29,7 @@ training:
 data:
   dataset: "cifar10"
   data_root: "../../../Datasets"
-  num_workers: 2
+  num_workers: 4
   pin_memory: true
   
 optimizer:
@@ -43,10 +44,11 @@ scheduler:
 logging:
   output_dir: "./outputs"
   exp_name: "ddpm_cifar10"
-  save_every: 10
-  sample_every: 5
+  save_every: 5
+  sample_every: 2
   log_every: 100
-  num_samples: 36
+  num_samples: 64
+  use_tensorboard: false
 
 device:
   accelerator: "cuda"
