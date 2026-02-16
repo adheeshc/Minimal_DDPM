@@ -12,7 +12,7 @@ import torch
 import torch.nn as nn
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from data import CIFARDataLoader
+from data import get_dataset_loader
 from diffusion import (
     CosineSchedule,
     DDPMSampler,
@@ -153,8 +153,9 @@ class DDPMTrainer:
         return optimizer
 
     def _get_dataloader(self):
-        """Create CIFAR-10 dataloader."""
-        dataset = CIFARDataLoader(root=self.config.data.data_root)
+        """Create dataloader based on config."""
+        loader_cls = get_dataset_loader(self.config.data.dataset)
+        dataset = loader_cls(root=self.config.data.data_root)
         dataloader = dataset.get_dataloader(
             batch_size=self.config.training.batch_size,
             shuffle=True,
@@ -328,8 +329,11 @@ class DDPMTrainer:
 
         sampler = DDPMSampler(self.model, self.forward_diffusion)
 
+        img_size = self.config.model.image_size
         samples = sampler.sample(
-            shape=(num_samples, 3, 32, 32), device=str(self.device), progress_bar=True
+            shape=(num_samples, self.config.model.in_channels, img_size, img_size),
+            device=str(self.device),
+            progress_bar=True,
         )
 
         return samples

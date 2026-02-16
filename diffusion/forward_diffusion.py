@@ -9,8 +9,7 @@ import matplotlib.pyplot as plt
 import torch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from data.dataloader import CIFARDataLoader
-
+from data.cifar10 import CIFARDataLoader
 from diffusion.noise_schedules import CosineSchedule, LinearSchedule, NoiseSchedule
 
 
@@ -45,7 +44,9 @@ class ForwardDiffusion:
         if noise is None:
             noise = torch.randn_like(x_0)
         sqrt_alpha = self.schedule.sqrt_alphas_cumprod[t].view(-1, 1, 1, 1)
-        sqrt_one_minus_alpha = self.schedule.sqrt_one_minus_alphas_cumprod[t].view(-1, 1, 1, 1)
+        sqrt_one_minus_alpha = self.schedule.sqrt_one_minus_alphas_cumprod[t].view(
+            -1, 1, 1, 1
+        )
         return sqrt_alpha * x_0 + sqrt_one_minus_alpha * noise
 
     def q_posterior(
