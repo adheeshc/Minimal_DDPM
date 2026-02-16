@@ -91,7 +91,7 @@ class DDPMTrainer:
         save_config(config, self.output_dir / "config.yaml")
 
         # setup logger and metric tracker
-        self.logger = TrainingLogger(self.log_dir, use_tensorboard=True)
+        self.logger = TrainingLogger(self.log_dir, use_tensorboard=config.logging.use_tensorboard)
         self.metric_tracker = MetricTracker()
 
         # setup model
@@ -154,7 +154,7 @@ class DDPMTrainer:
 
     def _get_dataloader(self):
         """Create CIFAR-10 dataloader."""
-        dataset = CIFARDataLoader()
+        dataset = CIFARDataLoader(root=self.config.data.data_root)
         dataloader = dataset.get_dataloader(
             batch_size=self.config.training.batch_size,
             shuffle=True,
