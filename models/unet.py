@@ -98,7 +98,10 @@ class SimpleUNet(nn.Module):
         )
 
         # Middle
-        self.middle = self._make_layer(
+        self.middle1 = self._make_layer(
+            base_channels * 4, base_channels * 4, time_embed_dim
+        )
+        self.middle2 = self._make_layer(
             base_channels * 4, base_channels * 4, time_embed_dim
         )
 
@@ -121,7 +124,11 @@ class SimpleUNet(nn.Module):
         self.dec1 = self._make_layer(base_channels * 2, base_channels, time_embed_dim)
 
         # output
-        self.out = nn.Conv2d(base_channels, out_channels, 1)
+        self.out = nn.Sequential(
+            nn.GroupNorm(8, base_channels),
+            nn.SiLU(),
+            nn.Conv2d(base_channels, out_channels, 1),
+        )
 
     def _make_layer(
         self, in_channels: int, out_channels: int, embed_dim: int
@@ -150,7 +157,8 @@ class SimpleUNet(nn.Module):
         h3 = self.enc3(h, t_emb)
         h = self.down3(h3)
 
-        h = self.middle(h, t_emb)
+        h = self.middle1(h, t_emb)
+        h = self.middle2(h, t_emb)
 
         h = self.up3(h)
         h = torch.cat([h, h3], dim=1)
