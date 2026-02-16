@@ -6,9 +6,7 @@ Train DDPM on CIFAR-10
 import argparse
 import os
 import sys
-import time
 from pathlib import Path
-from typing import Literal
 
 import torch
 import torch.nn as nn
@@ -17,7 +15,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data import CIFARDataLoader
 from diffusion import (
     CosineSchedule,
-    DDIMSampler,
     DDPMSampler,
     ForwardDiffusion,
     LinearSchedule,
@@ -279,8 +276,6 @@ class DDPMTrainer:
         self.logger.log(f"Batch size: {self.config.training.batch_size}")
         self.logger.log(f"Learning rate: {self.config.training.learning_rate}")
         self.logger.log("=" * 70)
-
-        start_time = time.time()
 
         for epoch in range(self.epoch, self.config.training.num_epochs):
             self.epoch = epoch
