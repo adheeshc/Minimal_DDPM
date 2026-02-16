@@ -86,6 +86,7 @@ class LoggingConfig:
     sample_every: int = 5
     log_every: int = 100
     num_samples: int = 64
+    use_tensorboard: bool = False
 
 
 @dataclass
