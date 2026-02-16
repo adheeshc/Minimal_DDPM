@@ -40,7 +40,7 @@ class CIFARDataLoader:
             img, label = self.dataset[i * step]
             images.append(img)
             labels.append(self.CLASS_NAMES[label])
-        images = torch.stack(images).to(self.device)
+        images = torch.stack(images).to(self.device)  # type: ignore
         return images, labels
 
     def get_dataloader(
@@ -54,3 +54,16 @@ class CIFARDataLoader:
             num_workers=num_workers,
             pin_memory=pin_memory,
         )
+
+
+if __name__ == "__main__":
+    loader = CIFARDataLoader(root="../../../Datasets", train=True)
+    print(f"Total samples: {len(loader.dataset)}")
+    images, labels = loader.get_samples(num_images=4)
+    print(f"Sample shape: {images.shape}")
+    print(f"Sample labels: {labels}")
+    dataloader = loader.get_dataloader(batch_size=8, num_workers=4)
+    batch = next(iter(dataloader))
+    imgs, lbls = batch
+    print(f"Batch shape: {imgs.shape}")
+    print(f"Labels shape: {lbls.shape}")
